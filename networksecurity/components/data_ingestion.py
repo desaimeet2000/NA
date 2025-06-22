@@ -53,29 +53,24 @@ class DataIngestion:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
         
+        
     def split_data_as_train_test(self, dataframe:pd.DataFrame):
         try:
             train_set, test_set = train_test_split(
                 dataframe, test_size=self.data_ingestion_config.train_test_split_ratio
             )
             logging.info("Performed train test split on dataframe")
-            logging.info(
-                "Exited split_data_as_train_test method successfully"
-            )
+            logging.info("Exited split_data_as_train_test method successfully")
             dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
             os.makedirs(dir_path, exist_ok=True)
-            logging.info(
-                "Exporting train and test filrd path."
-            )
+            logging.info("Exporting train and test filrd path.")
             train_set.to_csv(
                 self.data_ingestion_config.training_file_path, index=False, header=True
             )
             test_set.to_csv(
                 self.data_ingestion_config.testing_file_path, index=False, header=True
             )
-            logging.info(
-                "Exported train and test file path successfully"
-            )
+            logging.info("Exported train and test file path successfully")
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
