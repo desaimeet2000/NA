@@ -10,8 +10,10 @@ FILE_NAME: str = "NetworkData.csv"
 
 TRAIN_FILE_NAME: str = "train.csv"
 TEST_FILE_NAME: str = "test.csv"
+MODEL_FILE_NAME: str = "model.pkl"
 
 SCHEMA_FILE_PATH = os.path.join("data_schema", "schema.yaml")
+SAVED_MODEL_DIR = os.path.join("saved_models")
 
 """DATA INGESTION CONSTANTS
 """
@@ -47,3 +49,12 @@ DATA_TRANSFORMATION_IMPUTER_PARAMS: dict = {
 }
 DATA_TRANSFORMATION_TRAIN_FILE_PATH: str = "train.npy"
 DATA_TRANSFORMATION_TEST_FILE_PATH: str = "test.npy"
+
+
+MODEL_TRAINER_DIR_NAME: str = "model_trainer"
+MODEL_TRAINER_TRAINED_MODEL_DIR: str = "trained_model"
+MODEL_TRAINER_MODEL_NAME: str = "model.pkl"
+MODEL_TRAINER_EXPECTED_SCORE: float = 0.6
+MODEL_TRAINER_OVER_FITTING_UNDER_FITTING_THRESHOLD: float = 0.05
+
+TRAINING_BUCKET_NAME = "networksecurity"

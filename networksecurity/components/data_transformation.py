@@ -31,7 +31,7 @@ class DataTransformation:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
         
-     def get_data_transformer_object(cls)->Pipeline:
+     def get_data_transformer_object(self)->Pipeline:
         """
         It initialises a KNNImputer object with the parameters specified in the training_pipeline.py file
         and returns a Pipeline object with the KNNImputer object as the first step.
@@ -46,11 +46,11 @@ class DataTransformation:
             "Entered get_data_trnasformer_object method of Trnasformation class"
         )
         try:
-           imputer:KNNImputer=KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
+           imputer=KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
            logging.info(
                 f"Initialise KNNImputer with {DATA_TRANSFORMATION_IMPUTER_PARAMS}"
             )
-           processor:Pipeline=Pipeline([("imputer",imputer)])
+           processor=Pipeline([("imputer",imputer)])
            return processor
         except Exception as e:
             raise NetworkSecurityException(e,sys)
@@ -73,7 +73,7 @@ class DataTransformation:
             target_feature_test_df = test_df[TARGET_COLUMN]
             target_feature_test_df = target_feature_test_df.replace(-1, 0)
 
-            # ✅ Keep only numeric features
+            # Keep only numeric features
             input_feature_train_df = input_feature_train_df.select_dtypes(include=[np.number])
             input_feature_test_df = input_feature_test_df.select_dtypes(include=[np.number])
 
@@ -88,11 +88,11 @@ class DataTransformation:
             test_arr = np.c_[transformed_input_test_feature, np.array(target_feature_test_df) ]
 
             #save numpy array data
-            save_numpy_array_data( self.data_transformation_config.transformed_train_file_path, array=train_arr, )
-            save_numpy_array_data( self.data_transformation_config.transformed_test_file_path,array=test_arr,)
-            save_object( self.data_transformation_config.transformed_object_file_path, preprocessor_object,)
+            save_numpy_array_data( self.data_transformation_config.transformed_train_file_path,array=train_arr)
+            save_numpy_array_data( self.data_transformation_config.transformed_test_file_path,array=test_arr)
+            save_object( self.data_transformation_config.transformed_object_file_path, preprocessor_object)
 
-            save_object( "final_model/preprocessor.pkl", preprocessor_object,)
+            #save_object( "final_model/preprocessor.pkl", preprocessor_object,)
 
 
             #preparing artifacts
@@ -100,12 +100,10 @@ class DataTransformation:
             data_transformation_artifact=DataTransformationArtifact(
                 transformed_object_file_path=self.data_transformation_config.transformed_object_file_path,
                 transformed_train_file_path=self.data_transformation_config.transformed_train_file_path,
-                transformed_test_file_path=self.data_transformation_config.transformed_test_file_path
+                transformed_test_file_path=self.data_transformation_config.transformed_test_file_path,
                 transformation_status= True
             )
             return data_transformation_artifact
-
-
             
         except Exception as e:
             raise NetworkSecurityException(e,sys)
