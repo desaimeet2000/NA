@@ -19,7 +19,20 @@ from sklearn.ensemble import (
     GradientBoostingClassifier,
     RandomForestClassifier,
 )
+import tempfile
+import mlflow.sklearn
+
 import mlflow
+import dagshub
+dagshub.init(repo_owner='desaimeet2000', repo_name='NA', mlflow=True)
+from urllib.parse import urlparse
+
+
+
+#os.environ["MLFLOW_TRACKING_URI"]="https://dagshub.com/desaimeet2000/NA.mlflow"
+#os.environ["MLFLOW_TRACKING_USERNAME"]="desaimeet2000"
+#os.environ["MLFLOW_TRACKING_PASSWORD"]="7d252244795c2c5b542f4313ddae1606205bdd41"
+
 
 class ModelTrainer:
     def __init__(self, model_trainer_config: ModelTrainerConfig, data_transformation_artifact: DataTransformationArtifact):
@@ -32,14 +45,19 @@ class ModelTrainer:
 
     def track_mlflow(self, classificationmetric, best_model):
         with mlflow.start_run():
-            f1_score=classificationmetric.f1_score
-            precision_score=classificationmetric.precision_score
-            recall_score=classificationmetric.recall_score
+            mlflow.log_metric("f1_score", classification_metric.f1_score)
+            mlflow.log_metric("precision_score", classification_metric.precision_score)
+            mlflow.log_metric("recall_score", classification_metric.recall_score)
 
-            mlflow.log_metric("f1_score", f1_score)
-            mlflow.log_metric("precision_score", precision_score)
-            mlflow.log_metric("recall_score", recall_score)
-            mlflow.sklearn.log_model(best_model, "model")
+            # Save model to temp directory
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                model_path = os.path.join(tmp_dir, "model")
+                mlflow.sklearn.save_model(sk_model=best_model, path=model_path)
+
+                # Log model folder as artifact
+                mlflow.log_artifacts(model_path, artifact_path="model")
+
+            print("✅ Model and metrics logged to DagsHub via MLflow.")
 
 
     def train_model(self, x_train, y_train, x_test, y_test):
